@@ -16,27 +16,28 @@ time_start = time.time()
 
 ############# VARIABLES ################
 
-folder_result_name = "1_first_try"  # name of the result folder
+folder_result_name = "2_first_try"  # name of the result folder
 folder_result = "results/" + folder_result_name
 
 
 # test seed, keep the same to compare the results
-random_seed_test = 2002
-
+random_seed_test = 168
+torch.manual_seed(random_seed_test)
+np.random.seed(random_seed_test)
 
 ##### Hyperparameters
 # Uniquement si nouveau modèle
 hyper_param_init = {
-    "nb_epoch": 10,  # epoch number
-    "save_rate": 3,  # rate to save
+    "nb_epoch": 2000,  # epoch number
+    "save_rate": 10,  # rate to save
     "weight_data": 1,
     "weight_pde": 1,
-    "batch_size": 500,  # for the pde
-    "nb_points_pde": 10000,  # Total number of pde points
-    "Re": 100,
+    "batch_size": 5000,  # for the pde
+    "nb_points_pde": 1000000,  # Total number of pde points
+    "Re": 3900,
     "lr_init": 1e-3,  # Learning rate at the begining of training
     "gamma_scheduler": 0.999,  # Gamma scheduler for lr
-    "nb_layers": 1,
+    "nb_layers": 11,
     "nb_neurons": 32,
     "n_pde_test": 10000,
     "n_data_test": 10000,
@@ -63,6 +64,7 @@ X_train_np, U_train_np, X_full, U_full = charge_data()
 X_train = torch.from_numpy(X_train_np).requires_grad_().to(torch.float32).to(device)
 U_train = torch.from_numpy(U_train_np).requires_grad_().to(torch.float32).to(device)
 
+print(X_train.shape)
 # le domaine de résolution
 rectangle = Rectangle(
     x_max=X_full[:, 0].max(),
@@ -76,8 +78,8 @@ rectangle = Rectangle(
 X_pde = rectangle.generate_lhs(hyper_param["nb_points_pde"]).to(device)
 
 # Data test loading
-torch.manual_seed(random_seed_test)
-np.random.seed(random_seed_test)
+# torch.manual_seed(random_seed_test)
+# np.random.seed(random_seed_test)
 X_test_pde = rectangle.generate_lhs(hyper_param["n_pde_test"]).to(device)
 points_coloc_test = np.random.choice(
     len(X_full), hyper_param["n_data_test"], replace=False

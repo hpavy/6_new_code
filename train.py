@@ -36,7 +36,6 @@ def train(
     batch_size,
     scheduler,
 ):
-    batch_size_data = 5000
     nb_it_tot = nb_epoch + len(train_loss["total"])
     print(
         f"--------------------------\nStarting at epoch: {len(train_loss['total'])}"
