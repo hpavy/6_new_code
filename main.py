@@ -10,6 +10,7 @@ from pathlib import Path
 import time
 import pandas as pd
 import numpy as np
+import json
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
@@ -18,32 +19,42 @@ time_start = time.time()
 
 ############# LES VARIABLES ################
 
-folder_result = "4_turb_first"  # le nom du dossier de résultat
+folder_result_name = "5_turb_first"  # le nom du dossier de résultat
+folder_result = "results/" + folder_result_name
+
 
 random_seed_train = None
 # la seed de test, toujours garder la même pour pouvoir comparer
 random_seed_test = 2002
 
 
-##### Le modèle de résolution de l'équation de la chaleur
-nb_itt = 2800  # le nb d'epoch
-save_rate = 50
-poids = [1, 1]  # les poids pour la loss
+##### Les hyperparamètres
+hyper_param_init = {
+    "nb_itt": 2800,  # le nb d'epoch
+    "save_rate": 50,  # pour save le modèle
+    "poids_data": 1,
+    "poids_pde": 1,
+    "batch_size_pde": 5000,  # la taille d'un batch de pde
+    "nb_points_pde": 1000000,  # le nombre total de point du pde
+    "Re": 100,  # Le nombre de reynold
+    "lr_init": 1e-3,  # le learning rate au début de l'entrainement
+    "gamma_scheduler": 0.999,  # le gamma scheduler
+    "nb_couches": 10,  # nombre de couches du NN
+    "nb_neuronnes": 32,  # nombre de neuronnes par couche
+}
 
-batch_size = 5000  # la taille d'un batch
-# batch_size_pde = 1  # le nb de points pour la pde ### Pour l'instant on prend la même taille
 
-n_pde = 1000000
+# Pour charger le modèle
 
-n_data_test = 5000
-n_pde_test = 5000
+Path(folder_result).mkdir(parents=True, exist_ok=True)  # Creation du dossier de result
+if not Path(folder_result + "/hyper_param.json").exists():
+    with open(folder_result + "/hyper_param.json", "w") as file:
+        json.dump(hyper_param_init, file, indent=4)
+    hyper_param = hyper_param_init
 
-Re = 100
-
-lr = 1e-3
-
-gamma_scheduler = 0.999
-
+else:
+    with open(folder_result + "/hyper_param.json", "r") as file:
+        hyper_param = json.load(file)
 
 ##### Le code ###############################
 ###############################################
@@ -98,18 +109,21 @@ U_full = np.array([u_norm_full, v_norm_full, p_norm_full], dtype=np.float32).T
 
 x_int = np.linspace(x_norm_full.min(), x_norm_full.max(), 8)
 y_int = np.linspace(y_norm_full.min(), y_norm_full.max(), 8)
-X_reduce = np.zeros((0,3))
-U_reduce = np.zeros((0,3))
-for time in np.unique(X_full[:,2]):
-    for x_ in x_int :
-        for y_ in y_int :
-            masque_time = X_full[:,2]==time
-            distances = np.linalg.norm(X_full[masque_time][:,:2] - np.array([x_,y_], dtype=np.float32), axis=1)
+X_reduce = np.zeros((0, 3))
+U_reduce = np.zeros((0, 3))
+for time in np.unique(X_full[:, 2]):
+    for x_ in x_int:
+        for y_ in y_int:
+            masque_time = X_full[:, 2] == time
+            distances = np.linalg.norm(
+                X_full[masque_time][:, :2] - np.array([x_, y_], dtype=np.float32),
+                axis=1,
+            )
             index_min = np.argmin(distances)
             point_proche = X_full[masque_time][index_min]
             sol_proche = U_full[masque_time][index_min]
-            X_reduce = np.concatenate((X_reduce, point_proche.reshape(-1,3)))
-            U_reduce = np.concatenate((U_reduce, sol_proche.reshape(-1,3)))
+            X_reduce = np.concatenate((X_reduce, point_proche.reshape(-1, 3)))
+            U_reduce = np.concatenate((U_reduce, sol_proche.reshape(-1, 3)))
 
 X = torch.from_numpy(X_reduce).requires_grad_().to(torch.float32).to(device)
 U = torch.from_numpy(U_reduce).requires_grad_().to(torch.float32).to(device)
