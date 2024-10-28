@@ -8,6 +8,7 @@ from model import PINNs
 import torch
 import scipy
 
+
 def write_csv(data, path, file_name):
     dossier = Path(path)
     df = pd.DataFrame(data)
@@ -90,11 +91,9 @@ def charge_data():
     u_norm = (u - u.mean()) / u.std()
     v_norm = (v - v.mean()) / v.std()
 
-
     X_train = np.array([x_norm, y_norm, t_norm], dtype=np.float32).T
 
     U_train = np.array([u_norm, v_norm, p_norm], dtype=np.float32).T
-        
 
     mat_data_full = scipy.io.loadmat("cylinder_data.mat")
     data_full = mat_data_full["stack"]
@@ -110,12 +109,22 @@ def charge_data():
     u_norm_full = (u_full - u_full.mean()) / u_full.std()
     v_norm_full = (v_full - v_full.mean()) / v_full.std()
 
-
     X_full = np.array([x_norm_full, y_norm_full, t_norm_full], dtype=np.float32).T
 
     U_full = np.array([u_norm_full, v_norm_full, p_norm_full], dtype=np.float32).T
+    # data for pde
+    mean_std = {
+        "u_mean": u.mean(),
+        "v_mean": v.mean(),
+        "x_std": x.std(),
+        "y_std": y.std(),
+        "t_std": t.std(),
+        "u_std": u.std(),
+        "v_std": v.std(),
+        "p_std": p.std(),
+    }
 
-    return X_train, U_train, X_full, U_full
+    return X_train, U_train, X_full, U_full, mean_std
 
 
 def init_model(f, hyper_param, device, folder_result):

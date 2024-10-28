@@ -16,28 +16,27 @@ time_start = time.time()
 
 ############# VARIABLES ################
 
-folder_result_name = "2_first_try"  # name of the result folder
+folder_result_name = "19_compare"  # name of the result folder
 folder_result = "results/" + folder_result_name
 
 
 # test seed, keep the same to compare the results
-random_seed_test = 168
-torch.manual_seed(random_seed_test)
-np.random.seed(random_seed_test)
+random_seed_test = 2002
+
 
 ##### Hyperparameters
 # Uniquement si nouveau modèle
 hyper_param_init = {
-    "nb_epoch": 2000,  # epoch number
-    "save_rate": 10,  # rate to save
+    "nb_epoch": 20,  # epoch number
+    "save_rate": 3,  # rate to save
     "weight_data": 1,
     "weight_pde": 1,
-    "batch_size": 5000,  # for the pde
-    "nb_points_pde": 1000000,  # Total number of pde points
+    "batch_size": 500,  # for the pde
+    "nb_points_pde": 10000,  # Total number of pde points
     "Re": 3900,
     "lr_init": 1e-3,  # Learning rate at the begining of training
     "gamma_scheduler": 0.999,  # Gamma scheduler for lr
-    "nb_layers": 11,
+    "nb_layers": 1,
     "nb_neurons": 32,
     "n_pde_test": 10000,
     "n_data_test": 10000,
@@ -60,11 +59,11 @@ else:
 ###############################################
 
 # Data loading
-X_train_np, U_train_np, X_full, U_full = charge_data()
+X_train_np, U_train_np, X_full, U_full, mean_std = charge_data()
 X_train = torch.from_numpy(X_train_np).requires_grad_().to(torch.float32).to(device)
 U_train = torch.from_numpy(U_train_np).requires_grad_().to(torch.float32).to(device)
 
-print(X_train.shape)
+
 # le domaine de résolution
 rectangle = Rectangle(
     x_max=X_full[:, 0].max(),
@@ -75,11 +74,12 @@ rectangle = Rectangle(
     y_min=X_full[:, 1].min(),
 )
 
+
 X_pde = rectangle.generate_lhs(hyper_param["nb_points_pde"]).to(device)
 
 # Data test loading
-# torch.manual_seed(random_seed_test)
-# np.random.seed(random_seed_test)
+torch.manual_seed(random_seed_test)
+np.random.seed(random_seed_test)
 X_test_pde = rectangle.generate_lhs(hyper_param["n_pde_test"]).to(device)
 points_coloc_test = np.random.choice(
     len(X_full), hyper_param["n_data_test"], replace=False
@@ -115,14 +115,14 @@ with open(folder_result + "/print.txt", "a") as f:
         Re=hyper_param["Re"],
         time_start=time_start,
         f=f,
-        u_mean=U_full[:, 0].mean(),
-        v_mean=U_full[:, 1].mean(),
-        x_std=X_full[:, 0].std(),
-        y_std=X_full[:, 1].std(),
-        t_std=X_full[:, 2].std(),
-        u_std=U_full[:, 0].std(),
-        v_std=U_full[:, 1].std(),
-        p_std=U_full[:, 2].std(),
+        u_mean=mean_std["u_mean"],
+        v_mean=mean_std["v_mean"],
+        x_std=mean_std["x_std"],
+        y_std=mean_std["y_std"],
+        t_std=mean_std["t_std"],
+        u_std=mean_std["u_std"],
+        v_std=mean_std["v_std"],
+        p_std=mean_std["p_std"],
         folder_result=folder_result,
         save_rate=hyper_param["save_rate"],
         batch_size=hyper_param["batch_size"],
