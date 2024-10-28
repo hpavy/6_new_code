@@ -1,0 +1,114 @@
+Nouveau modèle
+
+--------------------------
+Starting at epoch: 0
+--------------------------
+---------------------
+Epoch 1/10 :
+Train : loss: 1.552e+00, data: 9.317e-01, pde: 6.199e-01
+Test  : loss: 1.842e+00, data: 1.269e+00, pde: 5.728e-01
+time: 26s
+---------------------
+Epoch 2/10 :
+Train : loss: 8.759e-01, data: 7.427e-01, pde: 1.332e-01
+Test  : loss: 1.310e+00, data: 1.187e+00, pde: 1.233e-01
+time: 27s
+---------------------
+Epoch 3/10 :
+Train : loss: 6.616e-01, data: 6.219e-01, pde: 3.961e-02
+Test  : loss: 1.168e+00, data: 1.130e+00, pde: 3.811e-02
+time: 28s
+---------------------
+Epoch 4/10 :
+Train : loss: 5.641e-01, data: 5.379e-01, pde: 2.625e-02
+Test  : loss: 1.122e+00, data: 1.096e+00, pde: 2.582e-02
+time: 28s
+---------------------
+Epoch 5/10 :
+Train : loss: 5.105e-01, data: 4.896e-01, pde: 2.095e-02
+Test  : loss: 1.105e+00, data: 1.084e+00, pde: 2.058e-02
+time: 29s
+---------------------
+Epoch 6/10 :
+Train : loss: 4.823e-01, data: 4.655e-01, pde: 1.681e-02
+Test  : loss: 1.101e+00, data: 1.085e+00, pde: 1.654e-02
+time: 30s
+---------------------
+Epoch 7/10 :
+Train : loss: 4.683e-01, data: 4.538e-01, pde: 1.448e-02
+Test  : loss: 1.103e+00, data: 1.089e+00, pde: 1.430e-02
+time: 31s
+---------------------
+Epoch 8/10 :
+Train : loss: 4.614e-01, data: 4.482e-01, pde: 1.324e-02
+Test  : loss: 1.105e+00, data: 1.092e+00, pde: 1.309e-02
+time: 32s
+---------------------
+Epoch 9/10 :
+Train : loss: 4.579e-01, data: 4.455e-01, pde: 1.241e-02
+Test  : loss: 1.106e+00, data: 1.093e+00, pde: 1.229e-02
+time: 33s
+---------------------
+Epoch 10/10 :
+Train : loss: 4.558e-01, data: 4.441e-01, pde: 1.175e-02
+Test  : loss: 1.105e+00, data: 1.093e+00, pde: 1.164e-02
+time: 34s
+
+Modèle chargé
+
+
+Loss chargée
+
+--------------------------
+Starting at epoch: 10
+--------------------------
+---------------------
+Epoch 11/20 :
+Train : loss: 4.542e-01, data: 4.431e-01, pde: 1.108e-02
+Test  : loss: 1.103e+00, data: 1.092e+00, pde: 1.106e-02
+time: 25s
+---------------------
+Epoch 12/20 :
+Train : loss: 4.529e-01, data: 4.424e-01, pde: 1.051e-02
+Test  : loss: 1.100e+00, data: 1.090e+00, pde: 1.049e-02
+time: 26s
+---------------------
+Epoch 13/20 :
+Train : loss: 4.518e-01, data: 4.418e-01, pde: 9.998e-03
+Test  : loss: 1.098e+00, data: 1.088e+00, pde: 9.982e-03
+time: 27s
+---------------------
+Epoch 14/20 :
+Train : loss: 4.507e-01, data: 4.412e-01, pde: 9.504e-03
+Test  : loss: 1.095e+00, data: 1.086e+00, pde: 9.489e-03
+time: 27s
+---------------------
+Epoch 15/20 :
+Train : loss: 4.497e-01, data: 4.406e-01, pde: 9.039e-03
+Test  : loss: 1.093e+00, data: 1.084e+00, pde: 9.024e-03
+time: 28s
+---------------------
+Epoch 16/20 :
+Train : loss: 4.487e-01, data: 4.401e-01, pde: 8.602e-03
+Test  : loss: 1.092e+00, data: 1.083e+00, pde: 8.588e-03
+time: 29s
+---------------------
+Epoch 17/20 :
+Train : loss: 4.478e-01, data: 4.396e-01, pde: 8.193e-03
+Test  : loss: 1.090e+00, data: 1.082e+00, pde: 8.179e-03
+time: 30s
+---------------------
+Epoch 18/20 :
+Train : loss: 4.469e-01, data: 4.391e-01, pde: 7.811e-03
+Test  : loss: 1.089e+00, data: 1.081e+00, pde: 7.798e-03
+time: 30s
+---------------------
+Epoch 19/20 :
+Train : loss: 4.461e-01, data: 4.386e-01, pde: 7.456e-03
+Test  : loss: 1.088e+00, data: 1.080e+00, pde: 7.443e-03
+time: 31s
+---------------------
+Epoch 20/20 :
+Train : loss: 4.453e-01, data: 4.381e-01, pde: 7.125e-03
+Test  : loss: 1.087e+00, data: 1.080e+00, pde: 7.113e-03
+time: 32s

@@ -7,15 +7,15 @@ from pathlib import Path
 
 
 def train(
-    nb_itt,
+    nb_epoch,
     train_loss,
     test_loss,
     poids,
     model,
     loss,
     optimizer,
-    X,
-    U,
+    X_train,
+    U_train,
     X_test_pde,
     X_test_data,
     U_test_data,
@@ -37,7 +37,7 @@ def train(
     scheduler,
 ):
     batch_size_data = 5000
-    nb_it_tot = nb_itt + len(train_loss["total"])
+    nb_it_tot = nb_epoch + len(train_loss["total"])
     print(
         f"--------------------------\nStarting at epoch: {len(train_loss['total'])}"
         + "\n--------------------------"
@@ -76,10 +76,10 @@ def train(
             )
 
             # loss des points de data
-            # X_batch = X[(batch * batch_size_data)%(len(X)-2*batch_size_data) : ((batch + 1) * batch_size_data)%(len(X)-batch_size_data), :]
-            # U_batch = U[(batch * batch_size_data)%(len(X)-2*batch_size_data) : ((batch + 1) * batch_size_data)%(len(X)-batch_size_data), :]
-            pred_data = model(X)
-            loss_data = loss(U, pred_data)  # (MSE)
+            # X_batch = X_train[(batch * batch_size_data)%(len(X_train)-2*batch_size_data) : ((batch + 1) * batch_size_data)%(len(X_train)-batch_size_data), :]
+            # U_batch = U_train[(batch * batch_size_data)%(len(X_train)-2*batch_size_data) : ((batch + 1) * batch_size_data)%(len(X_train)-batch_size_data), :]
+            pred_data = model(X_train)
+            loss_data = loss(U_train, pred_data)  # (MSE)
 
             # loss totale
             loss_totale = poids[0] * loss_data + poids[1] * loss_pde
@@ -161,11 +161,13 @@ def train(
                 {
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
+                    "scheduler_state_dict": scheduler.state_dict(),
                 },
                 folder_result
                 + f"/epoch{len(train_loss['total'])}"
                 + "/model_weights.pth",
             )
+
             write_csv(
                 train_loss,
                 folder_result + f"/epoch{len(train_loss['total'])}",

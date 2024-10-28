@@ -2,10 +2,6 @@ from deepxrte.gradients import gradient, derivee_seconde
 import torch
 import torch.nn as nn
 
-alpha = 1.2
-L = 0.05
-V0 = 1.0
-
 
 def pde(U, input, Re, x_std, y_std, u_mean, v_mean, p_std, t_std, u_std, v_std):
     # je sais qu'il fonctionne bien ! Il a été vérifié
@@ -52,35 +48,34 @@ def pde(U, input, Re, x_std, y_std, u_mean, v_mean, p_std, t_std, u_std, v_std):
 
 
 class PINNs(nn.Module):
-    def __init__(self):
+    def __init__(self, hyper_param):
         super().__init__()
-        self.couches = nn.ModuleList(
+        self.init_layer = nn.ModuleList([nn.Linear(3, hyper_param["nb_neurons"])])
+        self.hiden_layers = nn.ModuleList(
             [
-                nn.Linear(3, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 32),
-                nn.Linear(32, 3),
+                nn.Linear(hyper_param["nb_neurons"], hyper_param["nb_neurons"])
+                for _ in range(hyper_param["nb_layers"] - 1)
             ]
         )
+        self.final_layer = nn.ModuleList([nn.Linear(hyper_param["nb_neurons"], 3)])
+        self.layers = self.init_layer + self.hiden_layers + self.final_layer
         self.initial_param()
 
     def forward(self, x):
-        for k, couche in enumerate(self.couches):
-            if k != len(self.couches) - 1:
-                x = torch.tanh(couche(x))
+        for k, layer in enumerate(self.layers):
+            if k != len(self.layers) - 1:
+                x = torch.tanh(layer(x))
             else:
-                x = couche(x)
+                x = layer(x)
         return x  # Retourner la sortie
 
     def initial_param(self):
-        for couche in self.couches:
-            nn.init.xavier_uniform_(couche.weight)
-            nn.init.zeros_(couche.bias)
+        for layer in self.layers:
+            nn.init.xavier_uniform_(layer.weight)
+            nn.init.zeros_(layer.bias)
+
+
+if __name__ == "__main__":
+    hyper_param = {"nb_layers": 0, "nb_neurons": 32}
+    piche = PINNs(hyper_param)
+    print(piche)

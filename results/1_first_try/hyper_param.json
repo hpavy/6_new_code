@@ -1,0 +1,15 @@
+{
+    "nb_epoch": 10,
+    "save_rate": 3,
+    "weight_data": 1,
+    "weight_pde": 1,
+    "batch_size": 500,
+    "nb_points_pde": 10000,
+    "Re": 100,
+    "lr_init": 0.001,
+    "gamma_scheduler": 0.999,
+    "nb_layers": 1,
+    "nb_neurons": 32,
+    "n_pde_test": 10000,
+    "n_data_test": 10000
+}
